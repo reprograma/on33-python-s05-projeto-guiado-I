@@ -677,7 +677,7 @@ def menu():
             compras = []
             tela = ''
             pr.pular
-
+```
 
 <p align="center">
 Desenvolvido com :purple_heart:  

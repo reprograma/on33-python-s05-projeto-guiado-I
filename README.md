@@ -19,7 +19,7 @@ Antes de começar a codar vamos dar uma olhada no modulo [print_reprograma](http
 ## O que vamos fazer
 Nessa aula vamos fazer um terminal de vendas (PDV), o pdv é responsavel por adicionar todos os produtos em uma compra e depois mostrar tudo o que foi vendido
 
-Para isso vamos por partes
+Para isso vamos por partes. 💜
 
 ### Resumo
 O que veremos na aula de hoje?

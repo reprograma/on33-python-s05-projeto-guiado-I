@@ -8,7 +8,7 @@
 
 ### 🐱 **Enredo:** 
 
-    Agatha está muito animada com a abertura da sua loja, mas precisa de ajuda para organizar as vendas. Você se oferece para criar um sistema de vendas para a Lojinha do Conhecimento e Bem-Estar. Agatha precisa de um sistema que seja simples, eficiente e que ajude a gerenciar as compras dos clientes.
+Agatha está muito animada com a abertura da sua loja, mas precisa de ajuda para organizar as vendas. Você se oferece para criar um sistema de vendas para a Lojinha do Conhecimento e Bem-Estar. Agatha precisa de um sistema que seja simples, eficiente e que ajude a gerenciar as compras dos clientes.
 
 <br>
 

@@ -1,7 +1,8 @@
-import sys 
+import sys
 sys.path.append('material')
 import print_reprograma as pr
 from datetime import datetime
+
 
 produtos = [
     {'codigo': 1, 'nome': 'Introdução à Computação para Alunos Inteligentes - Volume 1', 'valor': 10.00},
@@ -106,11 +107,13 @@ produtos = [
     {'codigo': 100, 'nome': 'Direito Ambiental para Alunos Inteligentes', 'valor': 15.00},
 ]
 
+
 def produto_codigo(codigo):
     for produto in produtos:
         if produto['codigo'] == codigo:
             return produto
-        
+
+
 def novo_produto(produto, quantidade):
     return {
         'codigo':produto['codigo'],
@@ -119,6 +122,44 @@ def novo_produto(produto, quantidade):
         'quantidade':quantidade
     }
 
+
+def imprime_fechamento_caixa(compras):
+    pr.imprimir('Data', tamanho=89, alinhar='centro', end='|')
+    pr.imprimir('Qt.', tamanho=9, alinhar='centro', end='|')
+    pr.imprimir('valor', tamanho=20, alinhar='centro')  
+    total = 0
+    for compra in compras:
+        total += compra['total']
+        pr.imprimir(compra['data'].strftime("%d/%m/%Y %H:%M:%S "),tamanho=89,end='|',alinhar='fim')
+        pr.imprimir(str(len(compra['itens'])),tamanho=9,end='|',alinhar='centro')
+        pr.imprimir('R$',str(round(compra['total'],2)),tamanho=20,alinhar='fim')
+    pr.separador(120,caracter='-')
+    pr.imprimir('Total de compras do caixa', tamanho=99, alinhar='fim', end='|')
+    pr.imprimir('R$',str(round(total, 2)), tamanho=20, alinhar='fim')
+
+
+
+
+def imprime_compra_fechada(compra,total):
+    total_compra = 0
+    pr.imprimir('codigo', tamanho=6, alinhar='centro',end='|')
+    pr.imprimir('produto', tamanho=83, alinhar='centro',end='|')
+    pr.imprimir('qtd', tamanho=3, alinhar='centro', end='|')
+    pr.imprimir('valor un.', tamanho=12, alinhar='centro', end='|')
+    pr.imprimir('valor', tamanho=12, alinhar='centro')  
+    for produto in compra:
+        imprimir_produto(produto)
+        total_compra += produto['valor'] * produto['quantidade']
+    pr.separador(120,caracter='-')
+    pr.imprimir('Total', tamanho=107, alinhar='fim', end='|')
+    pr.imprimir('R$',str(round(total_compra, 2)), tamanho=12, alinhar='fim')
+    pr.imprimir('Total a pagar', tamanho=107, alinhar='fim', end='|')
+    pr.imprimir('R$',str(round(total, 2)), tamanho=12, alinhar='fim',cor_texto='verde negrito')
+    pr.limpar_formatacao()
+    pr.pular_linha()
+    pr.pular_linha()
+
+
 def imprime_compra(compra):
     if(len(compra) > 0):
         total = 0
@@ -126,38 +167,36 @@ def imprime_compra(compra):
         pr.imprimir('produto', tamanho=83, alinhar='centro',end='|')
         pr.imprimir('qtd', tamanho=3, alinhar='centro', end='|')
         pr.imprimir('valor un.', tamanho=12, alinhar='centro', end='|')
-        pr.imprimir('valor', tamanho=12, alinhar='centro')   
+        pr.imprimir('valor', tamanho=12, alinhar='centro')  
         for produto in compra:
-            total += produto['valor'] * produto['quantidade']
             imprimir_produto(produto)
+            total += produto['valor'] * produto['quantidade']
         pr.separador(120,caracter='-')
         pr.imprimir('Subtotal', tamanho=107, alinhar='fim', end='|')
         pr.imprimir('R$',str(round(total, 2)), tamanho=12, alinhar='fim')
     else:
-        pr.imprimir('Sem itens na lista ainda', tamanho=120, alinhar='center')
+        pr.imprimir('Sem itens na lista ainda. Insira o código do produto para comprar.', tamanho=120, alinhar='center')
     pr.pular_linha()
     pr.pular_linha()
+
 
 def imprimir_produto(produto):
     pr.imprimir(str(produto['codigo']), tamanho=6, alinhar='fim', caracter='0', end='|')
     pr.imprimir(produto['nome'], tamanho=83, caracter='.', end='|')
     pr.imprimir(str(produto['quantidade']), tamanho=3, caracter='0', alinhar='fim', end='|')
     pr.imprimir('R$',str(round(produto['valor'], 2)), tamanho=12, alinhar='fim', end='|')
-    pr.imprimir('R$',str(round(produto['valor'] * produto['quantidade'], 2)), tamanho=12, alinhar='fim')
+    pr.imprimir('R$',str(round(produto['valor'] * produto['quantidade'], 2)), tamanho=12, alinhar='fim')    
+
 
 def imprimir_cabecalho(erro):
     pr.limpar()
-    pr.retangulo('{reprograma}\nProjeto Guiado 1\nTerminal de Vendas', sv=1, tamanho=100, margem=6, cor_texto='azul negrito', cor_barra='magenta negrito')
-    pr.separador(108, cor_texto='ciano')
+    pr.retangulo('{reprograma}\nProjeto Guiado 1\nTerminal de Vendas',sv=1,tamanho=100, margem=10,cor_texto='azul negrito',cor_barra='magenta')
+    pr.separador(120,cor_texto='ciano')
     if(erro != ''):
-        pr.imprimir(erro, tamanho=120, alinhar='centro', cor_texto='vermelho negrito')
-        pr.separador(100, cor_texto='ciano')
+        pr.imprimir(erro,tamanho=120,alinhar='centro',cor_texto='vermelho negrito')
+        pr.separador(120,cor_texto='ciano')
     erro = ''
 
-def imprimir_rodape():
-    pr.imprimir('[H] Ajuda ', '[Q] Sair ', caracter='=', tamanho=158, alinhar='fim', end='╣')
-
-    return input().lower()
 
 def imprimir_ajuda():
     pr.pular_linha(quantidade=2)
@@ -171,35 +210,74 @@ def imprimir_ajuda():
     pr.imprimir('[E]   >> Encerar caixa',alinhar='centro',tamanho=120)
     pr.pular_linha(quantidade=2)
 
+
+def imprimir_rodape():
+    pr.imprimir('[H] Ajuda ','[Q] Sair ',caracter='═',tamanho=115,alinhar='fim',end='╣')
+
+
+    return input().lower()
+
+
 def menu():
     opcao = ''
     erro = ''
     tela = ''
     compra = []
+    compras = []
     while(opcao != 'q'):
         imprimir_cabecalho(erro)
         if(tela == ''):
             pr.pular_linha(quantidade=4)
         elif(tela == 'ajuda'):
             imprimir_ajuda()
-            tela = ''
+            tela=''
         elif(tela == 'compra'):
-            imprime_compra(compra)
+            imprime_compra(compra)    
+        elif(tela == 'fechar'):
+            imprime_compra_fechada(compra,total)
+        elif(tela == 'encerar'):
+            imprime_fechamento_caixa(compras)
+            compras = []
+            tela=''
+            pr.pular_linha(quantidade=2)
         opcao = imprimir_rodape()
         if(opcao == 'h'):
-            tela = 'ajuda'
+            tela='ajuda'
         elif(opcao == 'n'):
-            tela = 'compra'
+            tela='compra'
+        elif(opcao == 'f'):
+            total = calcula_total_desconto(compra)
+            tela = 'fechar'
+        elif(opcao == 'e'):
+            tela = 'encerar'
+        elif('p' in opcao):
+            compras.append({'itens':compra, 'total':total, 'data': datetime.now()})
+            compra = []
+            tela = ''
         else:
             try:
                 codigo = int(opcao)
                 produto = produto_codigo(codigo)
                 compra.append(novo_produto(produto,1))
-                quantidade = 1
             except ValueError:
                 erro = 'A opção selecionada não existe no sistema'
 
+
+
+def calcula_total_desconto(compra):
+    total = 0
+    for produto in compra:
+        total += (produto['valor'] * produto['quantidade'])
+   
+    for produto in compra:
+        if total > 100:
+            total *= 0.9
+            return total
+    else:
+        return total
+
+
+
+
 menu()
-
-
 

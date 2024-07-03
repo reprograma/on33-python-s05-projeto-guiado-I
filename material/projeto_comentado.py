@@ -335,7 +335,24 @@ def calcula_total_desconto(compra):  # Esta função recebe a compra como entrad
         # Calculamos o valor total do produto
         total += (produto['valor'] * produto['quantidade'])  # Somamos o valor total do produto ao total da compra
     # Aplicamos a regra de desconto (implemente aqui a lógica para aplicar desconto)
-    # ...
+     # Aplicar desconto de 10% para compras acima de R$ 100
+    if total > 100:
+        total *= 0.90
+    
+    # Aplicar desconto de 50% no segundo item em diante do mesmo tipo
+    quantidade_por_produto = {}
+    for produto in compra:
+        if produto['codigo'] in quantidade_por_produto:
+            quantidade_por_produto[produto['codigo']] += produto['quantidade']
+        else:
+            quantidade_por_produto[produto['codigo']] = produto['quantidade']
+    
+    desconto_combo = 0
+    for codigo, quantidade in quantidade_por_produto.items():
+        if quantidade > 1:
+            desconto_combo += (quantidade - 1) * (produto_codigo(codigo)['valor'] * 0.50)
+    
+    total -= desconto_combo
     # Retornamos o total da compra com desconto
     return total
 

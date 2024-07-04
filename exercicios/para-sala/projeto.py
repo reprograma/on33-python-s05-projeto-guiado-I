@@ -125,7 +125,7 @@ def novo_produto(produto, quantidade):
 
 #Essa função imprime o fechamento do caixa na tela e precisa receber um parâmetro, aqui deinido como "compra". Os primeiros argumentos são meramente estéticos para fazer com que a listagem fique esteticamente agradável na tela.
 #Depois das formatações, você define uma variável dentro dessa função, chamada total. Essa variável inicia em 0. Dentro da função foi inserido um for que percorre cada compra que vai ficar dentro da listas "compras", em cada uma delas eu vou acessar o valor "total" e somar à variável total (ex: se a primeira compra tiver o total de 10 reais, eu somo 0 (valor inicial da variável) +10 (valor da primeira compra analisada). Para a próxima compra na lista, a mesma coisa, acho ela, pego o total dela e somo ao total que eu tenho, até fechar todos os itens da lista "compras".
-#Por hora essa função não está sendo chamada no código.
+#É chamada na tela "encerrar"
 def imprime_fechamento_caixa(compras):
     pr.imprimir('Data', tamanho=89, alinhar='centro', end='|')
     pr.imprimir('Qt.', tamanho=9, alinhar='centro', end='|')
@@ -135,7 +135,7 @@ def imprime_fechamento_caixa(compras):
         total += compra['total']
         pr.imprimir(compra['data'].strftime("%d/%m/%Y %H:%M:%S "),tamanho=89,end='|',alinhar='fim')
         pr.imprimir(str(len(compra['itens'])),tamanho=9,end='|',alinhar='centro')
-        pr.imprimir('R$',str(round(compra['total'],2)),tamanho=20,alinhar='fim')
+        pr.imprimir("R$",str(round(compra['total'],2)),tamanho=20,alinhar='fim')
 
     pr.separador(120,caracter='-')
 
@@ -143,8 +143,8 @@ def imprime_fechamento_caixa(compras):
 
     pr.imprimir('R$',str(round(total, 2)), tamanho=20, alinhar='fim')
 
-#Essa função precisa receber dois parâmetros, sendo 01 referente à compra e um referente ao total. Ela também começa com uma variável total dentro dela, que inicia com valor zerado.
-#No caso 
+#Essa função precisa receber dois parâmetros, sendo 01 referente à compra e um referente ao total. Ela também começa com uma variável total dentro dela, que inicia com valor zerado (total_compra).
+#Dentro dessa função foi inserido um for que vai percorrer cada produto que estiver dentro da compra (ex: livro 1, livro 2, livro 3 etc.) e vai chamar a função "imprimir_produto" para cada produto da lista. Além disso essa função aqui vai atualizar o valor da compra em curso, pegando a variável total_compra (iniciada em 0) e adicionando a ela o resultado do valor do produto vezes a quantidade daquele produto.
 def imprime_compra_fechada(compra, total):
     total_compra = 0
     pr.imprimir('codigo', tamanho=6, alinhar='centro',end='|')
@@ -159,12 +159,16 @@ def imprime_compra_fechada(compra, total):
     pr.imprimir('Total', tamanho=107, alinhar='fim', end='|')
     pr.imprimir('R$',str(round(total_compra, 2)), tamanho=12, alinhar='fim')
     pr.imprimir('Total a pagar', tamanho=107, alinhar='fim', end='|')
-    pr.imprimir('R$',str(round(total, 2)), tamanho=12, alinhar='fim',cor_texto='verde negrito')
+    pr.imprimir('R$',str(round(total_compra, 2)), tamanho=12, alinhar='fim',cor_texto='verde negrito')
     pr.limpar_formatacao()
     pr.pular_linha()
     pr.pular_linha()
 
-#essa função abaixo imprime os dados da compra na tela
+#Essa função abaixo imprime os dados da compra na tela. No caso, essa função é chamada lá embaixo quando a opção digitada é n. Ela também possui uma variável total, que inicia em valor 0.
+#Dentro dela temos um if/else que verifica se já tenho algum item inserido ou não. Se (if) eu tiver compra maior que 0, ele atualiza a variável "total" adicionando a ela o resultado do valor do produto pela quantidade. A diferença dessa função para a de cima, é que essa aqui imprime na tela conforme você vai colocando os itens, a de cima é chamada quando você der o comando de fechar a compra.
+#Depois de atualizar o total, essa função chama a função "imprimir_produto" para que o item apareça listado na tela.
+#Caso nenhum item tenha sido adicionado à lista de compras (else) ele imprime na tela os dizeres "Sem itens na lista ainda"
+
 def imprime_compra(compra):
     if(len(compra) > 0):
         total = 0
@@ -179,12 +183,15 @@ def imprime_compra(compra):
         pr.separador(120,caracter='-')
         pr.imprimir('Subtotal', tamanho=107, alinhar='fim', end='|')
         pr.imprimir('R$',str(round(total, 2)), tamanho=12, alinhar='fim')
+
     else:
         pr.imprimir('Sem itens na lista ainda', tamanho=120, alinhar='center')
+
     pr.pular_linha()
     pr.pular_linha()
 
-#Essa função abaixo tem como objetivo imprimir as informações detalhadas do produto na tela
+#Essa função abaixo tem como objetivo imprimir as informações detalhadas do produto na tela. Ela está sendo chamada em outras funções (compra fechada e compra), para que quando forem dados os comandos possamos visualizar os produtos na tela, formatados como abaixo.
+# Basicamente ela acessa a informação que vai estar lá na lista "produtos" (que vai ter que ser chamada nas listas compra ou compra_fechada) e imprime na tela as informações de código, nome, quantidade, valor e de quantidade vezes o valor.
 def imprimir_produto(produto):
     pr.imprimir(str(produto['codigo']), tamanho=6, alinhar='fim', caracter='0', end='|')
     pr.imprimir(produto['nome'], tamanho=83, caracter='.', end='|')
@@ -192,7 +199,7 @@ def imprimir_produto(produto):
     pr.imprimir('R$',str(round(produto['valor'], 2)), tamanho=12, alinhar='fim', end='|')
     pr.imprimir('R$',str(round(produto['valor'] * produto['quantidade'], 2)), tamanho=12, alinhar='fim')
 
-#imprimir cabeçalho
+#Essa função imprimie o cabeçalho
 def imprimir_cabecalho(erro): #definindo essa funcao aqui quando chamarmos ela, ela vai imprimir o cabecalho
     pr.limpar()
     pr.retangulo("{reprograma}\nProjeto Guiado 1\nTerminal de Vendas", sv=1, tamanho=100, margem=10, cor_texto="azul negrito", cor_barra="magenta")
@@ -204,6 +211,7 @@ def imprimir_cabecalho(erro): #definindo essa funcao aqui quando chamarmos ela, 
 
     erro = ""
 
+#Essa função imprime o menu de ajuda na tela, ela será chamada abaixo quando for digitada a opção h.
 def imprimir_ajuda():
     pr.pular_linha(quantidade=2)
     pr.imprimir('[H]   >> Ajuda com o Sistema',alinhar='centro',tamanho=120)
@@ -216,65 +224,105 @@ def imprimir_ajuda():
     pr.imprimir('[E]   >> Encerar caixa',alinhar='centro',tamanho=120)
     pr.pular_linha(quantidade=2)
 
-#imprimir rodapé
-def imprimir_rodape():
+#Essa função imprime o rodapé, indicando as opções H e Q. Essa função também espera um input, porém trata as entradas do usuário para que o que ele digite fique em minúsculo (input().lower()) dessa forma não corre-se o risco que o usuário digite em maiúsculo e seja um comando inválido mesmo que esteja listado nas opções do menu ajuda.
+def imprimir_rodape_e_recebe_opcao_input():
     pr.imprimir("[H] Ajuda", "[Q] Sair ", caracter="=", tamanho=120, alinhar="fim", end="╣")
 
     return input().lower() # lower converte a string para letras minúsculas
 
 
-#criando um menu
+#Essa parte é como se fosse o coração do código, porque é ela que chama as funções e testa o que foi chamado. A última linha do código chama essa função (menu()).
+#Abaixo ela será comentada linha a linha.
 def menu():
-    opcao = "" #aqui colocamos o opcao com uma string vazia (só com aspas), para indicar que ela espera uma string que será recebida do usuário
-    erro = ""
-    tela = ""
-    compra = [] #aqui é a compra de um cliente apenas
-    compras = [] #aqui é uma lista de todas as compras feitas no dia (vários clientes)
-    while(opcao != "q"): #aqui estamos indicando que enquanto o usuário não digitar q, que é o comando de saída, ele volta a imprimir o cabeçalho
-       imprimir_cabecalho(erro)
-       if(tela == ""):
-           pr.pular_linha(quantidade=4) #nesse if se a tela estiver vazia ele pula 4 linhas 
+    opcao = "" #aqui criamos "opcao" como uma variável e definimos que ela será uma uma string vazia (só com aspas), ela espera que o usuário digite uma opção (H, Q, ou as do menu de ajuda ou até mesmo entradas inválidas)
+    erro = "" #Essa variável erro será chamada na função imprimir cabeçalho.
+    tela = "" #O programa inicia com a variável "tela"vazia. O valor dessa variável vai mudar conforme a gente digitar um valor no cabeçalho (lá no input que deixa tudo minúsculo), aí quando eu digito um valor, o código pega aquela letrinha e vê se ela corresponde a algum "comando" ou não, se sim, ele faz algo
+    compra = [] #Essa variável será equivalente à compra de um cliente apenas, a compra em curso. Ela é criada esperando uma lista.
+    compras = [] #Essa variável aqui é uma lista de todas as compras feitas no dia (vários clientes).
+    while(opcao != "q"): #Acima apenas declaramos as variáveis. Aqui colocamos um while que vai dar um comando para o programa de que ele vai ficar repetindo tudo o que estiver aqui dentro, até que o usuário digite "q", indicando que ele quer sair do sistema.
+       imprimir_cabecalho(erro) #enquanto o usuário não digitar "q" o sistema volta a imprimir o cabeçalho.
+       if(tela == ""): # Se a variável "tela" estiver vazia, o programa vai apenas pular 4 linhas só pra ficar esteticamente bonito (é a tela que vemos assim que executamos o programa)
+           pr.pular_linha(quantidade=4)  
 
-       elif(tela == "ajuda"):
+       elif(tela == "ajuda"): #se a variável tela tiver o valor "ajuda", o programa chama a função "imprimir_ajuda" e exibe na tela as opções de comando
             imprimir_ajuda()
             tela = ""
-       elif(tela == "compra"):
+
+       elif(tela == "compra"): #se a variável tela tiver o valor "compra", o programa chama a função "imprime_compra" que te mostra se tem algum item na lista ou deixa você adicionar itens e te mostra o subtotal.
            imprime_compra(compra)
        
-       elif(tela == "fechar"):
-           imprime_compra_fechada(compra, total)        
-      
-       opcao =  imprimir_rodape()
-       
-       if(opcao == "h"):
-           tela = "ajuda"
-       elif(opcao == "n"):
-           tela = "compra"       
+       elif(tela == "fechar"): #se a variável tela tiver o valor "fechar", o programa chama a função "imprime_compra_fechada" que corresponde à compra que o usuário fez,  mas indica o total que o usuário terá que pagar.
+           imprime_compra_fechada(compra, total)
+           
+       elif(tela == "encerrar"):  # Se a tela atual for a tela de encerrar o caixa
+            imprime_fechamento_caixa(compras)  # Chamamos a função 'imprime_fechamento_caixa' para imprimir o fechamento do caixa
+            compras = []  # Limpamos a lista de compras fechadas
+            tela = ""  # Definimos a tela atual como vazia (retorna para a tela inicial)
+            pr.pular_linha(quantidade=2)  # Pulamos 2 linhas
 
-       elif(opcao == "f"):
+       opcao =  imprimir_rodape_e_recebe_opcao_input() #Aqui o programa determina que o valor da variável opção vai vir do que o usuário digitar no rodapé, porque ele define que "opção é igual à função que imprime o rodapé e aguarda o input"sempre vai imprimir o rodapé na tela e como ele espera um input ele fica aguardando o usuário digitar algo na tela"
+       #aqui "fechou o ciclo de if e elif ali de cima"
+
+       if(opcao == "h"): #aqui, se o valor da variável "opção" for h ele atribui à variável tela o valor "ajuda" que vai rodar o if lá de cima
+           tela = "ajuda"
+
+       elif(opcao == "n"): #n atribui à tela o valor compra
+           tela = "compra"
+
+       elif(opcao == "f"): #f atribui à tela o valor fechar e também chama a função calcula_total_desconto
             total = calcula_total_desconto(compra)
             tela = 'fechar'
 
-       elif('p' in opcao):
+       elif(opcao == "e"):  #e atribui à tela o valor "encerrar"
+            tela = 'encerrar'
+
+       elif('p' in opcao): #p é o comando de confirmação que a compra foi paga
             compras.append({'itens': compra, 'total': total, 'data': datetime.now()})
             compra = []
-            tela = ''
+            tela = ""
 
        else:
             try:
                 codigo = int(opcao)
                 produto = obtem_produto_pelo_codigo(codigo)
-                compra.append(novo_produto(produto,1))
-                quantidade = 1
+                if produto != None:
+                    compra.append(novo_produto(produto,1))
+                    quantidade = 1
+                else:
+                    print("ERRO! PRODUTO NÃO CADASTRADO. DIGITE UM CÓDIGO VÁLIDO")
+                    opcao = input("Pressione enter para continuar.")
 
             except ValueError:
                 erro = 'A opção selecionada não existe no sistema'
 
 def calcula_total_desconto(compra):
     total = 0
-    for produto in compra:
-        total += (produto["valor"] * produto["quantidade"])
+    quantidade_do_produto = {}
+    
+    for produto in compra:       
+
+        if produto["codigo"] in quantidade_do_produto:
+            quantidade_do_produto[produto["codigo"]] += 1
+            total += produto["valor"]*0.5
+        else:
+            quantidade_do_produto[produto["codigo"]] = 1
+            total += produto["valor"]
+    
+
+        if total > 100:
+            total *= 0.9
+
+
+    return total
+    
+
+
+
+
+
+
+
         #regra para aplicar desconto - PROVAVELMENTE É AQUI QUE VAMOS APLICAR OS DESCONTOS, QUE ACREDITO QUE SEJA SÓ COLOCAR QUE SE O TOTAL FOR MAIOR QUE 100 DÁ 10% DE DESCONTO, OU SE A QUANTIDADE DE UM ITEM FOR MAIOR QUE 1 ELE RECEBE UM DESCONTO DE  50% SOBRE O SEGUNDO PRODUTO
-        return total
+
 
 menu()

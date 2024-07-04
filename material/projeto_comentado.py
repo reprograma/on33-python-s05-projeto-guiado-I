@@ -160,7 +160,7 @@ def imprime_fechamento_caixa(compras):  # Esta função recebe uma lista de comp
     pr.imprimir('R$', str(round(total, 2)), tamanho=20, alinhar='fim')  # Imprimimos o valor total das compras
 
 # Esta função imprime uma compra fechada, mostrando todos os itens e o total a pagar.
-def imprime_compra_fechada(compra, total):  # Esta função recebe a compra e o valor total como entrada
+def imprime_compra_fechada(compra, total, desconto):  # Esta função recebe a compra e o valor total como entrada
     # Inicializamos a variável 'total_compra' para guardar o valor total da compra
     total_compra = 0
     # Imprimimos o cabeçalho da tabela de produtos da compra
@@ -180,6 +180,8 @@ def imprime_compra_fechada(compra, total):  # Esta função recebe a compra e o 
     # Imprimimos o subtotal da compra
     pr.imprimir('Total', tamanho=107, alinhar='fim', end='|')  # Imprimimos o subtotal da compra
     pr.imprimir('R$', str(round(total_compra, 2)), tamanho=12, alinhar='fim')  # Imprimimos o valor do subtotal
+    pr.imprimir('Desconto', tamanho=107, alinhar='fim', end='|')  # Imprimimos a palavra "Desconto"
+    pr.imprimir('R$', str(round(desconto, 2)), tamanho=12, alinhar='fim')  # Imprimimos o valor do desconto
     # Imprimimos o total a pagar
     pr.imprimir('Total a pagar', tamanho=107, alinhar='fim', end='|')  # Imprimimos o total a pagar
     pr.imprimir('R$', str(round(total, 2)), tamanho=12, alinhar='fim', cor_texto='verde negrito')  # Imprimimos o valor do total a pagar com texto verde e negrito
@@ -294,7 +296,8 @@ def menu():  # Esta função não recebe nenhuma entrada
         elif tela == 'compra':  # Se a tela atual for a tela de compra
             imprime_compra(compra)  # Chamamos a função 'imprime_compra' para imprimir a lista de produtos da compra atual
         elif tela == 'fechar':  # Se a tela atual for a tela de fechar a compra
-            imprime_compra_fechada(compra, total)  # Chamamos a função 'imprime_compra_fechada' para imprimir a compra fechada
+            total, desconto = calcula_total_desconto(compra)
+            imprime_compra_fechada(compra, total, desconto)  # Chamamos a função 'imprime_compra_fechada' para imprimir a compra fechada
         elif tela == 'encerar':  # Se a tela atual for a tela de encerrar o caixa
             imprime_fechamento_caixa(compras)  # Chamamos a função 'imprime_fechamento_caixa' para imprimir o fechamento do caixa
             compras = []  # Limpamos a lista de compras fechadas
@@ -308,7 +311,7 @@ def menu():  # Esta função não recebe nenhuma entrada
         elif opcao == 'n':  # Se a opção do usuário for 'n' (nova compra)
             tela = 'compra'  # Definimos a tela atual como 'compra'
         elif opcao == 'f':  # Se a opção do usuário for 'f' (fechar compra)
-            total = calcula_total_desconto(compra)  # Chamamos a função 'calcula_total_desconto' para calcular o total da compra
+            total, desconto = calcula_total_desconto(compra)  # Chamamos a função 'calcula_total_desconto' para calcular o total da compra
             tela = 'fechar'  # Definimos a tela atual como 'fechar'
         elif opcao == 'e':  # Se a opção do usuário for 'e' (encerrar caixa)
             tela = 'encerar'  # Definimos a tela atual como 'encerar'
@@ -330,14 +333,38 @@ def menu():  # Esta função não recebe nenhuma entrada
 def calcula_total_desconto(compra):  # Esta função recebe a compra como entrada
     # Inicializamos a variável 'total'
     total = 0
+    total_sem_desconto = 0
+    desconto_combo = 0
     # Percorremos a lista de produtos
     for produto in compra:  # Para cada produto na lista de produtos
         # Calculamos o valor total do produto
         total += (produto['valor'] * produto['quantidade'])  # Somamos o valor total do produto ao total da compra
+        total_sem_desconto += (produto['valor'] * produto['quantidade'])
     # Aplicamos a regra de desconto (implemente aqui a lógica para aplicar desconto)
-    # ...
+        # Aplicar desconto de 10% para compras acima de R$ 100
+    desconto_total = 0
+    if total > 100:
+        desconto_total = total * 0.10
+        total *= 0.90
+        total *= 0.90
+    
+    # Aplicar desconto de 50% no segundo item em diante do mesmo tipo
+    quantidade_por_produto = {}
+    for produto in compra:
+        if produto['codigo'] in quantidade_por_produto:
+            quantidade_por_produto[produto['codigo']] += produto['quantidade']
+        else:
+            quantidade_por_produto[produto['codigo']] = produto['quantidade']
+    
+    desconto_combo = 0
+    for codigo, quantidade in quantidade_por_produto.items():
+        if quantidade > 1:
+            desconto_combo += (quantidade - 1) * (produto_codigo(codigo)['valor'] * 0.50)
+    
+    total -= desconto_combo
+    desconto_total += desconto_combo
     # Retornamos o total da compra com desconto
-    return total
+    return total, desconto_total
 
 # Chamamos a função 'menu' para iniciar o programa
 menu()

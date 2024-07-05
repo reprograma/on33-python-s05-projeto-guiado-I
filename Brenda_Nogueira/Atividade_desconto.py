@@ -298,6 +298,8 @@ def menu():
             except TypeError:
                 erro = 'O código do produto não existe'
                
-
+def remover_item(compra, codigo):
+    compra[:] = [item for item in compra if item['codigo'] != codigo]
+    return compra
 
 menu()        

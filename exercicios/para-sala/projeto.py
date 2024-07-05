@@ -336,7 +336,7 @@ def calcula_total_desconto(compra):
                 quantidade_produto_por_codigo[produto["codigo"]] = produto["quantidade"] #se não tem, conte 1 para aquele produto
                 total += (produto["valor"] * produto["quantidade"]) 
 
-
+# Função feita pela professora em aula
     #     for codigo in set([item['codigo']) for item in compra]):
     #                 quantidade_codigo = sum([item['quantidade'] for item in compra if item ['codigo'] == codigo])
     #     if quantidade_codigo > 1:

@@ -348,15 +348,5 @@ def calcula_total_desconto(compra):
     # return total, desconto
 
     return total, desconto
-    
-
-
-
-
-
-
-
-        #regra para aplicar desconto - PROVAVELMENTE É AQUI QUE VAMOS APLICAR OS DESCONTOS, QUE ACREDITO QUE SEJA SÓ COLOCAR QUE SE O TOTAL FOR MAIOR QUE 100 DÁ 10% DE DESCONTO, OU SE A QUANTIDADE DE UM ITEM FOR MAIOR QUE 1 ELE RECEBE UM DESCONTO DE  50% SOBRE O SEGUNDO PRODUTO
-
 
 menu()

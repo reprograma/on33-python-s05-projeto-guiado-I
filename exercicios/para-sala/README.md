@@ -1,17 +1,57 @@
-# Exercício de Sala 🏫  
+# Terminal de Vendas
+_Projeto Guiado_
 
-## Nome do Exercicio
+Este é um sistema simples de terminal de vendas escrito em Python.
 
-- Explicação do exercício: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam leo nibh, tempus sed rhoncus et, ultrices vitae orci.
-Donec erat mauris, laoreet in tortor vel, eleifend suscipit nibh. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Aliquam leo nibh, tempus sed rhoncus et, ultrices vitae orci. Donec erat mauris, laoreet in tortor vel, eleifend suscipit nibh. 
----
+## Descrição
 
-Terminou o exercício? Dá uma olhada nessa checklist e confere se tá tudo certinho, combinado?!
+O sistema permite realizar vendas de produtos pré-definidos e possui funcionalidades básicas como adicionar produtos à compra, calcular descontos baseados em regras específicas e fechar a compra.
 
-- [ ] Fiz o fork do repositório.
-- [ ] Clonei o fork na minha máquina (`git clone url-do-meu-fork`).
-- [ ] Resolvi o exercício.
-- [ ] Adicionei as mudanças. (`git add .` para adicionar todos os arquivos, ou `git add nome_do_arquivo` para adicionar um arquivo específico)
-- [ ] Commitei a cada mudança significativa ou na finalização do exercício (`git commit -m "Mensagem do commit"`)
-- [ ] Pushei os commits na minha branch (`git push origin nome-da-branch`)
+## Funcionalidades
+
+- **Adicionar produtos à compra:** Informe o código do produto para adicionar à lista de compra.
+- **Fechar compra:** Finaliza a compra atual, calculando o total a ser pago com possíveis descontos.
+- **Encerrar caixa:** Mostra o fechamento do caixa atual, exibindo todas as compras realizadas desde o último encerramento.
+- **Ajuda:** Fornece um resumo das principais operações disponíveis no sistema.
+- **Sair:** Finaliza a execução do sistema.
+
+## Requisitos
+
+- Python 3.x instalado.
+
+## Como usar
+
+1. **Clone o repositório:**
+   ```bash
+   git clone <url_do_repositório>
+   cd terminal-vendas
+   ```
+
+2. **Execute o programa:**
+   ```bash
+   python terminal_vendas.py
+   ```
+
+3. **Operação:**
+   - Siga as instruções apresentadas no terminal para interagir com o sistema.
+   - Utilize os códigos dos produtos listados para adicioná-los à compra.
+   - Ao fechar a compra, o sistema calculará automaticamente o total e qualquer desconto aplicável.
+
+## Exemplo de Uso
+
+- **Adicionar produto à compra:**
+  ```
+  [Digite o código do produto] >> 1
+  [Digite o código do produto] >> 5
+  [Digite o código do produto] >> 12
+  ```
+
+- **Fechar a compra:**
+  ```
+  [H] Ajuda [Q] Sair ══════════════════════════🎬 F
+  ```
+
+- **Encerrar caixa:**
+  ```
+  [H] Ajuda [Q] Sair ══════════════════════════🎬 E
+  ```

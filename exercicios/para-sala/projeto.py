@@ -131,8 +131,10 @@ def imprime_fechamento_caixa(compras):
     pr.imprimir('Qt.', tamanho=9, alinhar='centro', end='|')
     pr.imprimir('valor', tamanho=20, alinhar='centro')  
     total = 0
+    total_desconto = 0 #inicializando com 0 
     for compra in compras:
         total += compra['total']
+        total_desconto += compra["desconto"] #acumula o desconto de cada compra
         pr.imprimir(compra['data'].strftime("%d/%m/%Y %H:%M:%S "),tamanho=89,end='|',alinhar='fim')
         pr.imprimir(str(len(compra['itens'])),tamanho=9,end='|',alinhar='centro')
         pr.imprimir("R$",str(round(compra['total'],2)),tamanho=20,alinhar='fim')
@@ -143,9 +145,13 @@ def imprime_fechamento_caixa(compras):
 
     pr.imprimir('R$',str(round(total, 2)), tamanho=20, alinhar='fim')
 
+    #imprime total de desconto
+    pr.imprimir('Total de descontos aplicados', tamanho=99, alinhar='fim', end='|')
+    pr.imprimir('- R$',str(round(total_desconto, 2)), tamanho=20, alinhar='fim', cor_texto= 'vermelho negrito')
+
 #Essa função precisa receber dois parâmetros, sendo 01 referente à compra e um referente ao total. Ela também começa com uma variável total dentro dela, que inicia com valor zerado (total_compra).
 #Dentro dessa função foi inserido um for que vai percorrer cada produto que estiver dentro da compra (ex: livro 1, livro 2, livro 3 etc.) e vai chamar a função "imprimir_produto" para cada produto da lista. Além disso essa função aqui vai atualizar o valor da compra em curso, pegando a variável total_compra (iniciada em 0) e adicionando a ela o resultado do valor do produto vezes a quantidade daquele produto.
-def imprime_compra_fechada(compra, total):
+def imprime_compra_fechada(compra, total, desconto):
     total_compra = 0
     pr.imprimir('codigo', tamanho=6, alinhar='centro',end='|')
     pr.imprimir('produto', tamanho=83, alinhar='centro',end='|')
@@ -158,8 +164,17 @@ def imprime_compra_fechada(compra, total):
     pr.separador(120,caracter='-')
     pr.imprimir('Total', tamanho=107, alinhar='fim', end='|')
     pr.imprimir('R$',str(round(total_compra, 2)), tamanho=12, alinhar='fim')
+    
+    #imprimir valor do desconto
+    if desconto > 0:
+        pr.imprimir("Desconto aplicado", tamanho=107, alinhar="fim", end="|")
+        pr.imprimir('- R$', str(round(desconto, 2)), tamanho=12, alinhar='fim', cor_texto='vermelho negrito')
+        # total_compra -= desconto
+    
     pr.imprimir('Total a pagar', tamanho=107, alinhar='fim', end='|')
-    pr.imprimir('R$',str(round(total_compra, 2)), tamanho=12, alinhar='fim',cor_texto='verde negrito')
+    pr.imprimir('R$',str(round(total, 2)), tamanho=12, alinhar='fim',cor_texto='verde negrito')
+
+    
     pr.limpar_formatacao()
     pr.pular_linha()
     pr.pular_linha()
@@ -252,7 +267,8 @@ def menu():
            imprime_compra(compra)
        
        elif(tela == "fechar"): #se a variável tela tiver o valor "fechar", o programa chama a função "imprime_compra_fechada" que corresponde à compra que o usuário fez,  mas indica o total que o usuário terá que pagar.
-           imprime_compra_fechada(compra, total)
+           total, desconto = calcula_total_desconto(compra)
+           imprime_compra_fechada(compra, total, desconto)
            
        elif(tela == "encerrar"):  # Se a tela atual for a tela de encerrar o caixa
             imprime_fechamento_caixa(compras)  # Chamamos a função 'imprime_fechamento_caixa' para imprimir o fechamento do caixa
@@ -277,7 +293,7 @@ def menu():
             tela = 'encerrar'
 
        elif('p' in opcao): #p é o comando de confirmação que a compra foi paga
-            compras.append({'itens': compra, 'total': total, 'data': datetime.now()})
+            compras.append({'itens': compra, 'total': total, 'data': datetime.now(), "desconto": desconto})
             compra = []
             tela = ""
 
@@ -296,24 +312,40 @@ def menu():
                 erro = 'A opção selecionada não existe no sistema'
 
 def calcula_total_desconto(compra):
-    total = 0
-    quantidade_do_produto = {}
+    total = 0 #a função inicia o total em 0
+    desconto = 0 #a função inicia o desconto em 0
+
+    for produto in compra: #aqui é estabelecido um for que define que para todos os produtos listados em compra
+        total += (produto["valor"] * produto["quantidade"]) # o total é igual ao valor do produto vezes a quantidade do produto, com isso, ao final da lista temos um valor total daquela compra
     
-    for produto in compra:       
+    if total >= 100: #caso o total da compra seja maior que 100
+        desconto = total * 0.1 #você determina um desconto total de 10% 
+        total *= 0.9 #e o valor total da compra será de 0.9 o valor inicial    POSSO COLOCAR ESSA LINHA NO FINAL E APLICAR QUE O TOTAL É IGUAL TOTAL MENOS O DESCONTO? 
 
-        if produto["codigo"] in quantidade_do_produto:
-            quantidade_do_produto[produto["codigo"]] += 1
-            total += produto["valor"]*0.5
-        else:
-            quantidade_do_produto[produto["codigo"]] = 1
-            total += produto["valor"]
-    
+    else: #caso o total da compra não seja maior que 100
+        total = 0 #aqui ele inicia o total em 0 novamente porque ele será calculado
+        
+        quantidade_produto_por_codigo = {} #crio uma variável que vai verificar se tenho códigos repetidos nos produtos da compra, essa variável é um dicionário
 
-        if total > 100:
-            total *= 0.9
+        for produto in compra: #então, se a minha compra não deu mais que 100 reais para cada produto na compra eu vou ver se
+            if produto["codigo"] in quantidade_produto_por_codigo: #já tem esse código do produto nessa lista (que começou vazia)?
+                quantidade_produto_por_codigo[produto["codigo"]] += produto["quantidade"] #eu somo 1 à quantidade que eu já tinha
+                total += (produto["valor"] * produto["quantidade"]*0.5)
+                desconto +=  (produto["valor"] * produto["quantidade"]*0.5)
+            else: #se eu já tenho aquele produto na lista que eu criei para verificar a quantidade
+                quantidade_produto_por_codigo[produto["codigo"]] = produto["quantidade"] #se não tem, conte 1 para aquele produto
+                total += (produto["valor"] * produto["quantidade"]) 
 
 
-    return total
+    #     for codigo in set([item['codigo']) for item in compra]):
+    #                 quantidade_codigo = sum([item['quantidade'] for item in compra if item ['codigo'] == codigo])
+    #     if quantidade_codigo > 1:
+    #             desconto += (obtem_produto_pelo_codigo(codigo)['valor'] * (quantidade_codigo - 1)) * 0.5
+    #             total -= desconto
+
+    # return total, desconto
+
+    return total, desconto
     
 
 

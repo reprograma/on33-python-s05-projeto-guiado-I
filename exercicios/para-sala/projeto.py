@@ -127,17 +127,19 @@ def novo_produto(produto, quantidade):
 #Depois das formatações, você define uma variável dentro dessa função, chamada total. Essa variável inicia em 0. Dentro da função foi inserido um for que percorre cada compra que vai ficar dentro da listas "compras", em cada uma delas eu vou acessar o valor "total" e somar à variável total (ex: se a primeira compra tiver o total de 10 reais, eu somo 0 (valor inicial da variável) +10 (valor da primeira compra analisada). Para a próxima compra na lista, a mesma coisa, acho ela, pego o total dela e somo ao total que eu tenho, até fechar todos os itens da lista "compras".
 #É chamada na tela "encerrar"
 def imprime_fechamento_caixa(compras):
-    pr.imprimir('Data', tamanho=89, alinhar='centro', end='|')
-    pr.imprimir('Qt.', tamanho=9, alinhar='centro', end='|')
-    pr.imprimir('valor', tamanho=20, alinhar='centro')  
+    pr.imprimir('Data', tamanho=69, alinhar='centro', end='|')
+    pr.imprimir('Qt.', tamanho=10, alinhar='centro', end='|')
+    pr.imprimir('valor com desconto', tamanho=20, alinhar='centro', end='|')  
+    pr.imprimir('desconto', tamanho=18, alinhar='fim')  
     total = 0
     total_desconto = 0 #inicializando com 0 
     for compra in compras:
         total += compra['total']
         total_desconto += compra["desconto"] #acumula o desconto de cada compra
-        pr.imprimir(compra['data'].strftime("%d/%m/%Y %H:%M:%S "),tamanho=89,end='|',alinhar='fim')
-        pr.imprimir(str(len(compra['itens'])),tamanho=9,end='|',alinhar='centro')
-        pr.imprimir("R$",str(round(compra['total'],2)),tamanho=20,alinhar='fim')
+        pr.imprimir(compra['data'].strftime("%d/%m/%Y %H:%M:%S "),tamanho=69,end='|',alinhar='fim')
+        pr.imprimir(str(len(compra['itens'])),tamanho=10,end='|',alinhar='centro')
+        pr.imprimir("R$",str(round(compra['total'],2)),tamanho=20,end='|',alinhar='centro')
+        pr.imprimir("- R$",str(round(compra['desconto'],2)), tamanho=18, alinhar='fim', cor_texto= 'vermelho')
 
     pr.separador(120,caracter='-')
 
@@ -305,7 +307,7 @@ def menu():
                     compra.append(novo_produto(produto,1))
                     quantidade = 1
                 else:
-                    print("ERRO! PRODUTO NÃO CADASTRADO. DIGITE UM CÓDIGO VÁLIDO")
+                    pr.imprimir("ERRO! PRODUTO NÃO CADASTRADO. DIGITE UM CÓDIGO VÁLIDO", cor_texto= "amarelo negrito")
                     opcao = input("Pressione enter para continuar.")
 
             except ValueError:
